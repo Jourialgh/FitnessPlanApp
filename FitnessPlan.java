@@ -1,4 +1,3 @@
-
 public class FitnessPlan {
     private String planType;
     private int duration;  // minutes per week
@@ -28,3 +27,4 @@ public class FitnessPlan {
         return healthGoal;
     }
 }
+
