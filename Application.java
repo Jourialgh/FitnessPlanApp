@@ -12,8 +12,9 @@ public class Application {
         System.out.print("Enter your user role (e.g., Regular, Admin): ");
         String userRole = scanner.nextLine().trim();
 
+        AuthorizationService authorizationService = new AuthorizationService();
         // Validate user role to enforce fail-safe defaults
-        if (!userRole.equalsIgnoreCase("Regular") && !userRole.equalsIgnoreCase("Admin")) {
+        if (!authorizationService.isValidRole(userRole)) {
             System.out.println("Invalid user role. Access denied.");
             scanner.close();
             return;  // Fail-Safe: deny access if role is not recognized
@@ -61,6 +62,7 @@ public class Application {
     }
 
     // Method to sanitize input and prevent special characters
+    // minimize trust surface
     private static String sanitizeInput(String input) {
         return input.replaceAll("[^a-zA-Z0-9.,\\s]", "").trim();
     }
