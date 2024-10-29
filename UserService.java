@@ -1,10 +1,9 @@
-// In UserService.java
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class UserService {
-    // Display all users
+    //Display all users
     public void displayAllUsers() {
         System.out.println("All Registered Users:");
         try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
@@ -18,7 +17,7 @@ public class UserService {
         }
     }
 
-    // Display a user's profile (for regular users)
+    //Display a user's profile (for regular users)
     public void displayUserProfile(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
             String line;
@@ -34,11 +33,11 @@ public class UserService {
         }
     }
 
-    // Update user's password
+    //Update user's password
     public void updateUserProfile(String username, String newPassword) {
         AuthorizationService authService = new AuthorizationService();
-        authService.removeUser(username); // Remove old record
-        authService.saveUser(username, newPassword, "Regular"); // Re-add with new password
+        authService.removeUser(username);
+        authService.saveUser(username, newPassword, "Regular"); 
         System.out.println("Profile updated successfully.");
     }
 }

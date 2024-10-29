@@ -1,14 +1,16 @@
-
-// In Application.java
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
-
     private static final AuthorizationService authService = new AuthorizationService();
     private static final UserService userService = new UserService();
+    private static final FitnessService fitnessService = new FitnessService();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        //Test if encryption and decryption work
+        //fitnessService.testEncryption();
 
         System.out.println("Welcome to the Fitness Plan Recommendation System!");
         System.out.print("Do you want to Sign Up or Login? (Enter 'signup' or 'login'): ");
@@ -102,14 +104,15 @@ public class Application {
         }
     }
 
-    // User menu
+    //User menu
     private static void showUserMenu(Scanner scanner, String username) {
         boolean loggedIn = true;
         while (loggedIn) {
             System.out.println("\nUser Menu:");
             System.out.println("1. View Profile");
             System.out.println("2. Update Profile");
-            System.out.println("3. Logout");
+            System.out.println("3. Get Fitness Plan Recommendation");
+            System.out.println("4. Logout");
             System.out.print("Choose an option: ");
             String option = scanner.nextLine().trim();
 
@@ -123,6 +126,9 @@ public class Application {
                     userService.updateUserProfile(username, newPassword);
                     break;
                 case "3":
+                    recommendFitnessPlan(scanner);
+                    break;
+                case "4":
                     System.out.println("Logging out...");
                     loggedIn = false;
                     break;
@@ -131,4 +137,31 @@ public class Application {
             }
         }
     }
+    private static void recommendFitnessPlan(Scanner scanner) {
+        System.out.print("Enter your fitness goal (e.g., Weight Loss, Muscle Building): ");
+        String fitnessGoal = scanner.nextLine().trim();
+
+        System.out.print("Enter your fitness level (Beginner, Intermediate, Advanced): ");
+        String fitnessLevel = scanner.nextLine().trim();
+
+        System.out.print("Enter your age: ");
+        int age = Integer.parseInt(scanner.nextLine().trim());
+
+        System.out.print("Enter your medical history: ");
+        String medicalHistory = scanner.nextLine().trim();
+
+        //Get recommendations
+        List<FitnessPlan> recommendedPlans = fitnessService.getRecommendedPlans(fitnessGoal, fitnessLevel, age, medicalHistory, "Regular");
+        
+        //Display recommendations
+        if (recommendedPlans.isEmpty()) {
+            System.out.println("No suitable fitness plans found based on your input.");
+        } else {
+            System.out.println("Recommended Fitness Plans:");
+            for (FitnessPlan plan : recommendedPlans) {
+                System.out.println("- " + plan.getPlanType() + " (Duration: " + plan.getDuration() + " minutes/week, Level: " + plan.getFitnessLevel() + ")");
+            }
+        }
+    }
+
 }

@@ -1,6 +1,6 @@
 public class FitnessPlan {
     private String planType;
-    private int duration;  // minutes per week
+    private int duration;  //minutes per week
     private String fitnessLevel;
     private String healthGoal;
 

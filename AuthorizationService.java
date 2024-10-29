@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 public class AuthorizationService {
     private static final String USER_FILE = "users.txt";
 
-    // Save new user to the users file
+    //Save new user to the users file
     public boolean saveUser(String username, String password, String role) {
         if (userExists(username))
             return false;
@@ -56,7 +56,7 @@ public class AuthorizationService {
         return userRemoved;
     }
 
-    // Authenticate user by reading users file
+    //Authenticate user by reading users file
     public boolean authenticateUser(String username, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
@@ -72,23 +72,23 @@ public class AuthorizationService {
         return false;
     }
 
-    // Get user role
+    //Get user role
     public String getUserRole(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(",");
                 if (userDetails[0].equals(username)) {
-                    return userDetails[2]; // Return role
+                    return userDetails[2]; 
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading user file: " + e.getMessage());
         }
-        return "Regular"; // Default to Regular if role not found
+        return "Regular"; //Default to Regular if role not found
     }
 
-    // Check if user already exists
+    //Check if user already exists
     private boolean userExists(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
