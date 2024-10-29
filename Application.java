@@ -1,69 +1,134 @@
+
+// In Application.java
 import java.util.Scanner;
-import java.util.List;
 
 public class Application {
+
+    private static final AuthorizationService authService = new AuthorizationService();
+    private static final UserService userService = new UserService();
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        FitnessService fitnessService = new FitnessService();
 
         System.out.println("Welcome to the Fitness Plan Recommendation System!");
+        System.out.print("Do you want to Sign Up or Login? (Enter 'signup' or 'login'): ");
+        String choice = scanner.nextLine().trim().toLowerCase();
 
-        // Simulate user roles (In a real application, this would come from user authentication)
-        System.out.print("Enter your user role (e.g., Regular, Admin): ");
-        String userRole = scanner.nextLine().trim();
-
-        AuthorizationService authorizationService = new AuthorizationService();
-        // Validate user role to enforce fail-safe defaults
-        if (!authorizationService.isValidRole(userRole)) {
-            System.out.println("Invalid user role. Access denied.");
-            scanner.close();
-            return;  // Fail-Safe: deny access if role is not recognized
-        }
-
-        // Collect user inputs with validation
-        System.out.print("Enter your fitness goal (e.g., Weight Loss, Muscle Building, etc.): ");
-        String fitnessGoal = scanner.nextLine().trim();
-
-        System.out.print("Enter your current fitness level (Beginner, Intermediate, Advanced): ");
-        String fitnessLevel = scanner.nextLine().trim();
-
-        int age = 0;
-        while (age <= 0) {
-            System.out.print("Enter your age: ");
-            try {
-                age = Integer.parseInt(scanner.nextLine());
-                if (age <= 0) {
-                    System.out.println("Age must be a positive number. Please try again.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a numeric value for age.");
-            }
-        }
-
-        System.out.print("Enter any relevant medical history (e.g., illnesses, surgeries): ");
-        String medicalHistory = sanitizeInput(scanner.nextLine());
-
-        System.out.println("\nCalculating recommendations...\n");
-
-        // Get recommendations based on user role and display
-        List<FitnessPlan> recommendedPlans = fitnessService.getRecommendedPlans(fitnessGoal, fitnessLevel, age, medicalHistory, userRole);
-        if (recommendedPlans.isEmpty()) {
-            System.out.println("No plans found for your input.");
+        if (choice.equals("signup")) {
+            signUp(scanner);
+        } else if (choice.equals("login")) {
+            login(scanner);
         } else {
-            System.out.println("Recommended Fitness Plans:");
-            for (FitnessPlan plan : recommendedPlans) {
-                int requiredMinutes = fitnessService.calculateRequiredExerciseTime(plan.getDuration(), fitnessLevel);
-                System.out.printf("- %s (%d minutes/week) - Goal: %s\n", plan.getPlanType(), requiredMinutes, plan.getHealthGoal());
-            }
-            System.out.println("\nAdditional Notes: " + fitnessService.getAdditionalNotes(medicalHistory, fitnessLevel));
+            System.out.println("Invalid choice. Exiting.");
         }
 
         scanner.close();
     }
 
-    // Method to sanitize input and prevent special characters
-    // minimize trust surface
-    private static String sanitizeInput(String input) {
-        return input.replaceAll("[^a-zA-Z0-9.,\\s]", "").trim();
+    private static void signUp(Scanner scanner) {
+        System.out.print("Enter a username: ");
+        String username = scanner.nextLine().trim();
+
+        System.out.print("Enter a password: ");
+        String password = scanner.nextLine().trim();
+
+        System.out.print("Enter your role (Admin/Regular): ");
+        String role = scanner.nextLine().trim();
+
+        if (authService.saveUser(username, password, role)) {
+            System.out.println("Sign-up successful. You can now log in.");
+        } else {
+            System.out.println("User already exists. Please try a different username.");
+        }
+    }
+
+    private static void login(Scanner scanner) {
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine().trim();
+
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine().trim();
+
+        if (authService.authenticateUser(username, password)) {
+            String role = authService.getUserRole(username);
+            System.out.println("Login successful! Welcome, " + role + " user: " + username);
+            if (role.equalsIgnoreCase("Admin")) {
+                showAdminMenu(scanner);
+            } else {
+                showUserMenu(scanner, username);
+            }
+        } else {
+            System.out.println("Login failed. Invalid username or password.");
+        }
+    }
+
+    //Admin menu
+    private static void showAdminMenu(Scanner scanner) {
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\nAdmin Menu:");
+            System.out.println("1. View All Users");
+            System.out.println("2. Add New User");
+            System.out.println("3. Remove User");
+            System.out.println("4. Logout");
+            System.out.print("Choose an option: ");
+            String option = scanner.nextLine().trim();
+
+            switch (option) {
+                case "1":
+                    userService.displayAllUsers();
+                    break;
+                case "2":
+                    System.out.print("Enter new username: ");
+                    String newUsername = scanner.nextLine().trim();
+                    System.out.print("Enter password: ");
+                    String password = scanner.nextLine().trim();
+                    System.out.print("Enter role (Admin/Regular): ");
+                    String role = scanner.nextLine().trim();
+                    authService.saveUser(newUsername, password, role);
+                    break;
+                case "3":
+                    System.out.print("Enter username to remove: ");
+                    String removeUsername = scanner.nextLine().trim();
+                    authService.removeUser(removeUsername);
+                    break;
+                case "4":
+                    System.out.println("Logging out...");
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    // User menu
+    private static void showUserMenu(Scanner scanner, String username) {
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\nUser Menu:");
+            System.out.println("1. View Profile");
+            System.out.println("2. Update Profile");
+            System.out.println("3. Logout");
+            System.out.print("Choose an option: ");
+            String option = scanner.nextLine().trim();
+
+            switch (option) {
+                case "1":
+                    userService.displayUserProfile(username);
+                    break;
+                case "2":
+                    System.out.print("Enter new password: ");
+                    String newPassword = scanner.nextLine().trim();
+                    userService.updateUserProfile(username, newPassword);
+                    break;
+                case "3":
+                    System.out.println("Logging out...");
+                    loggedIn = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
     }
 }
