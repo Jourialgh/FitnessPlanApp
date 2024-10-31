@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fitness Plan</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0f7fa; /* Light blue background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #00796b; /* Dark teal color */
+        }
+
+        .motivation {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .fitness-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border 0.3s; /* Smooth transition for border */
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border: 2px solid #00796b; /* Highlight border on focus */
+            outline: none; /* Remove default outline */
+        }
+
+        input[type="submit"] {
+            background-color: #00796b;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s; /* Smooth transition for background */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #004d40; /* Darker shade on hover */
+        }
+
+        p {
+            margin-top: 15px;
+        }
+
+        a {
+            color: #00796b;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline on hover for better interactivity */
+        }
+
+        .tips {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <img src="https://assets.change.org/photos/0/nm/nl/QEnmNLfSVHOSCgn-1600x900-noPad.jpg?1592418517" alt="Fitness Motivation" class="fitness-image">
+        <p class="motivation">"Transform your body, transform your life!"</p>
+        <form action="/api/login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <input type="submit" value="Login">
+        </form>
+        <p>Don't have an account? <a href="/api/signup">Sign up</a></p>
+        <div class="tips">
+            <h3>Tips for Success:</h3>
+            <ul>
+                <li>Stay consistent with your workouts.</li>
+                <li>Fuel your body with nutritious foods.</li>
+                <li>Stay hydrated throughout the day.</li>
+                <li>Set realistic fitness goals.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

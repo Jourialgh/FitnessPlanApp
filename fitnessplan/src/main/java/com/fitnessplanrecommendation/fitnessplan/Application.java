@@ -1,13 +1,14 @@
 package com.fitnessplanrecommendation.fitnessplan;
 import java.util.List;
 import java.util.Scanner;
-import com.fitnessplanrecommendation.fitnessplan.model.FitnessPlan;
-import com.fitnessplanrecommendation.fitnessplan.service.AuthorizationService;
-import com.fitnessplanrecommendation.fitnessplan.service.UserService;
-import com.fitnessplanrecommendation.fitnessplan.service.FitnessService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.fitnessplanrecommendation.fitnessplan.model.FitnessPlan;
+import com.fitnessplanrecommendation.fitnessplan.service.AuthorizationService;
+import com.fitnessplanrecommendation.fitnessplan.service.FitnessService;
+import com.fitnessplanrecommendation.fitnessplan.service.UserService;
 
 @SpringBootApplication
 public class Application {
@@ -16,6 +17,7 @@ public class Application {
     private static final FitnessService fitnessService = new FitnessService();
 
     public static void main(String[] args) {
+        SpringApplication.run(Application.class,args);
         try (Scanner scanner = new Scanner(System.in)) {
 
             //Test if encryption and decryption work
