@@ -3,3 +3,5 @@ user1,user1pass,Regular
 user2,user2pass,Regular
 jouri,123,admin
 jo,12,Regular
+rog,12345,Regular
+rana,ZP3mud7lYFhvXIBtKYP4/XE1m98NM1Jwt1V3Mxzn5Yc=,Regular

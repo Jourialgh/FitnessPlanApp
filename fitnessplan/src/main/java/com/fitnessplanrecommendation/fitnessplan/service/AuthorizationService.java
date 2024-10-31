@@ -5,21 +5,37 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+//Libraries handling the hashing function
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+import java.util.Base64;
 
 import org.springframework.stereotype.Service;
 @Service
 public class AuthorizationService {
     private static final String USER_FILE = "users.txt";
 
-    //Save new user to the users file
+    //Hashing password method
+    public String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest hashGenerator = MessageDigest.getInstance("SHA-256");
+        byte[] hashedBytes = hashGenerator.digest(password.getBytes());
+        return Base64.getEncoder().encodeToString(hashedBytes);
+    }
+
+    //Save new user with the hashed password
     public boolean saveUser(String username, String password, String role) {
         if (userExists(username))
             return false;
 
         try (FileWriter writer = new FileWriter(USER_FILE, true)) {
-            writer.write(username + "," + password + "," + role + "\n");
+            String hashedPassword = hashPassword(password);
+            writer.write(username + "," + hashedPassword + "," + role + "\n");
+           
+            //System.out.println("Original password:"+ password);
+            //System.out.println("Hashed password:"+ hashedPassword);
+
             return true;
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             System.out.println("Error saving user: " + e.getMessage());
             return false;
         }
@@ -59,17 +75,19 @@ public class AuthorizationService {
         return userRemoved;
     }
 
-    //Authenticate user by reading users file
+    //Authenticate user by reading users file and comparing hashed password
     public boolean authenticateUser(String username, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
             String line;
+            String hashedPassword = hashPassword(password);
+
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(",");
-                if (userDetails[0].equals(username) && userDetails[1].equals(password)) {
+                if (userDetails[0].equals(username) && userDetails[1].equals(hashedPassword)) {
                     return true;
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             System.out.println("Error reading user file: " + e.getMessage());
         }
         return false;
