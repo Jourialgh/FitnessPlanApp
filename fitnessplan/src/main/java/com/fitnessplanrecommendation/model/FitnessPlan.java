@@ -1,8 +1,8 @@
-package com.fitnessplanrecommendation.fitnessplan.model;
+package com.fitnessplanrecommendation.model;
 
 public class FitnessPlan {
     private String planType;
-    private int duration;  //minutes per week
+    private int duration; // minutes per week
     private String fitnessLevel;
     private String healthGoal;
 
@@ -28,5 +28,6 @@ public class FitnessPlan {
     public String getHealthGoal() {
         return healthGoal;
     }
-}
 
+    
+}
