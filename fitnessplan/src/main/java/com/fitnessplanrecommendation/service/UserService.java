@@ -4,6 +4,9 @@ import com.fitnessplanrecommendation.model.User;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Service;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+@Service
 public class UserService {
 
     private AuthorizationService authorizationService = new AuthorizationService();
@@ -31,13 +35,16 @@ public class UserService {
     public List<User> displayAllUsers() {
         List<User> users = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE))) {
+            System.out.println("Reading users from " + USER_FILE);
             String line;
             while ((line = reader.readLine()) != null) {
+                System.out.println("Read line: " + line);
                 String[] parts = line.split(",");
                 users.add(new User(parts[0], parts[1], parts[2], ""));
             }
         } catch (IOException e) {
             System.out.println("Error reading users: " + e.getMessage());
+            e.printStackTrace();
         }
         return users;
     }
@@ -45,11 +52,11 @@ public class UserService {
     public boolean deleteUser(String username) {
         List<User> users = displayAllUsers();
         boolean userFound = users.removeIf(user -> user.getUsername().equals(username));
-        if (userFound) {
-            saveAllUsers(users);
+            if (userFound) {
+                saveAllUsers(users);
+            }
+            return userFound;
         }
-        return userFound;
-    }
 
     public boolean updateUserRole(String username, String newRole) {
         List<User> users = displayAllUsers();
@@ -76,9 +83,9 @@ public class UserService {
         if (userExists(username))
             return false;
 
-        String hashedPassword = authorizationService.hashPassword(password);
+        //String hashedPassword = authorizationService.hashPassword(password);
         String encryptedHistory = encrypt(medicalHistory, secretKey);
-        return authorizationService.saveUser(username, hashedPassword, role);
+        return authorizationService.saveUser(username, authorizationService.hashPassword(password), role);
     }
 
     // Authenticate user by reading users file and comparing hashed password
@@ -166,4 +173,12 @@ public class UserService {
             System.out.println("Error saving users: " + e.getMessage());
         }
     }
+
+    public User findByUsername(String username){
+        List <User> users= displayAllUsers();
+        return users.stream()
+                    .filter(user-> user.getUsername().equals(username))
+                    .findFirst()
+                    .orElse(null);
+                }
 }

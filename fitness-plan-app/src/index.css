@@ -11,3 +11,42 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.admin-dashboard {
+  display: flex;
+}
+.sidenav {
+  width: 200px;
+  background-color: #f0f0f0;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav button {
+  margin: 10px 0;
+  padding: 10px;
+  text-align: left;
+  width: 100%;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+}
+
+.sidenav button:hover {
+  background: #ccc;
+}
+
+.admin-content {
+  margin-left: 20px;
+  flex-grow: 1;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
